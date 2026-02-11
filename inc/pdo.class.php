@@ -65,6 +65,7 @@ class database
             $this->db = new PDO('mysql:host=' . static::$host . ';dbname=' . static::$name . ';charset=utf8',
                 static::$user, static::$pass, $opts);
         } catch (PDOException $e) {
+            http_response_code(503);
             exit('<p style="color:red;"><strong>CONSTRUCT ERROR</strong></p><pre>' . $e->getMessage() . '</pre>');
         }
     }
