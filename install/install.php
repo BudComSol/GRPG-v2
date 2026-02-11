@@ -263,12 +263,20 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
             $protocol = 'http' . ($isHttps ? 's' : '');
             // Use SERVER_NAME if available (more secure as it comes from server config)
             // Fall back to HTTP_HOST but validate it
-            $host = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+            if (isset($_SERVER['SERVER_NAME'])) {
+                $host = $_SERVER['SERVER_NAME'];
+            } elseif (isset($_SERVER['HTTP_HOST'])) {
+                $host = $_SERVER['HTTP_HOST'];
+            } else {
+                error('Unable to determine the server hostname. Please ensure your web server is configured correctly.');
+            }
             // Validate host to prevent header injection attacks
             if (!preg_match('/^[a-z0-9.\-:]+$/i', $host)) {
                 error('Invalid host detected. Please ensure your web server is configured correctly.');
             }
             // Get the base path by going up two directories from /install/install.php
+            // This works because the installer is always located at /install/install.php relative to the game root
+            // For example: /game/install/install.php → /game (two levels up)
             // Validate and sanitize SCRIPT_NAME to prevent path traversal
             if (!isset($_SERVER['SCRIPT_NAME'])) {
                 error('Unable to determine the installation path. Please ensure your web server is configured correctly.');
@@ -277,9 +285,10 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
             // Normalize first, then validate to ensure we're checking the actual value that will be used
             $scriptName = str_replace('\\', '/', $scriptName); // Normalize directory separators
             $scriptName = preg_replace('#/+#', '/', $scriptName); // Remove duplicate slashes
-            // Validate that SCRIPT_NAME starts with / and contains only valid path characters
-            // Also prevent path traversal attempts (both .. and . references)
-            if (!preg_match('#^/[\w\-/]*(?:\.\w+)?$#', $scriptName) || 
+            // Validate that SCRIPT_NAME is a properly formatted path with segments
+            // Pattern ensures: starts with /, has valid segments (alphanumeric, hyphen, underscore),
+            // optional file extension at the end, and prevents any dot references
+            if (!preg_match('#^/[\w\-]+(?:/[\w\-]+)*(?:\.\w+)?$#', $scriptName) || 
                 strpos($scriptName, '..') !== false || 
                 preg_match('#/\.(?:/|$)#', $scriptName)) {
                 error('Invalid installation path detected. Please ensure the installer is accessed through a valid URL.');
