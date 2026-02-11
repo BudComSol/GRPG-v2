@@ -239,7 +239,8 @@ class Zebra_Session extends SessionHandler
         // the maximum amount of time (in seconds) for which a process can lock the session
         $this->lock_timeout = $lock_timeout;
         // set parameters
-        session_set_cookie_params($session_lifetime, session_get_cookie_params()['path'], $_SERVER['HTTP_HOST'], true, true);
+        $cookie_params = session_get_cookie_params();
+        session_set_cookie_params($session_lifetime, $cookie_params['path'], $cookie_params['domain'], true, true);
         // register the new handler
         session_set_save_handler([&$this, 'open'], [&$this, 'close'], [&$this, 'read'], [&$this, 'write'], [&$this, 'destroy'], [&$this, 'gc']);
         // name the session
