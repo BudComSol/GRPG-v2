@@ -172,7 +172,7 @@ if ($siteURL !== null) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
 <link rel="stylesheet" type="text/css" media="all" href="css/pure-css.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/vendor/fortawesome/font-awesome/css/fontawesome.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/inc/vendor/fortawesome/font-awesome/css/fontawesome.min.css" />
 </head>
 <body>
 <table class="container" border="0" cellspacing="0" cellpadding="0" width="100%">

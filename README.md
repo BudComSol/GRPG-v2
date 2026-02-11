@@ -6,8 +6,10 @@ Text-based online RPG
 
 * Upload the files to your public_html (or htdocs/www)
 * Create a MySQL database and user
-* Go to the URL of wherever you just uploaded them - go through it and fill in the details
+* Go to the URL of wherever you just uploaded them - go through the installer and fill in the details
 * Login
+
+**Note:** All dependencies are included locally - no need for Composer or other package managers!
 
 ### I found a bug! ###
 If you're able to repair it, please do and submit the fix back. If not, please notify us

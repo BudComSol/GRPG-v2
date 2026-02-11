@@ -13,18 +13,14 @@
       "email": "hulladam38@gmail.com"
     }
   ],
+  "_comment": "NOTE: Composer is NOT required! All dependencies are included locally in inc/vendor/ for easier deployment on shared hosting.",
   "require": {
-    "vlucas/phpdotenv": "5.0.0",
-    "fortawesome/font-awesome": "5.13.1",
     "ext-pdo": "*",
     "ext-mbstring": "*",
     "ext-ctype": "*",
     "ext-curl": "*",
     "ext-exif": "*",
     "ext-gd": "*"
-  },
-  "require-dev": {
-    "roave/security-advisories": "dev-master"
   },
   "autoload": {
     "classmap": [
