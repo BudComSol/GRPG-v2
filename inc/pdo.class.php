@@ -65,7 +65,11 @@ class database
             $this->db = new PDO('mysql:host=' . static::$host . ';dbname=' . static::$name . ';charset=utf8',
                 static::$user, static::$pass, $opts);
         } catch (PDOException $e) {
-            exit('<p style="color:red;"><strong>CONSTRUCT ERROR</strong></p><pre>' . $e->getMessage() . '</pre>');
+            // Log the detailed error for debugging
+            error_log('Database connection error: ' . $e->getMessage());
+            // Show user-friendly error without exposing sensitive details
+            http_response_code(503);
+            exit('<h1>Service Temporarily Unavailable</h1><p>Unable to connect to the database. Please try again later or contact the administrator.</p>');
         }
     }
 

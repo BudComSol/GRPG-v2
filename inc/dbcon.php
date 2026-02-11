@@ -5,8 +5,17 @@ if (!defined('GRPG_INC')) {
     exit;
 }
 if (!defined('INSTALLER') && !file_exists(dirname(__DIR__) . '/.env')) {
-    header('Location: install');
-    exit;
+    // Try to copy .env.local to .env if it exists
+    if (file_exists(dirname(__DIR__) . '/.env.local')) {
+        if (!copy(dirname(__DIR__) . '/.env.local', dirname(__DIR__) . '/.env')) {
+            // If copy fails, redirect to install
+            header('Location: install');
+            exit;
+        }
+    } else {
+        header('Location: install');
+        exit;
+    }
 }
 // Load local vendor autoloader (no Composer required)
 $autoloader = __DIR__ . '/vendor/autoload.php';
