@@ -257,7 +257,10 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
                 error('I couldn\'t find that directory. Are you sure you\'ve entered the correct game path?');
             }
             // Construct the base URL from the current request
-            $protocol = 'http' . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 's' : '');
+            // Check for HTTPS - consider both direct HTTPS and proxy headers
+            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+                       (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+            $protocol = 'http' . ($isHttps ? 's' : '');
             $host = $_SERVER['HTTP_HOST'];
             // Get the base path by going up two directories from /install/install.php
             // Validate and sanitize SCRIPT_NAME to prevent path traversal
@@ -265,12 +268,14 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
                 error('Unable to determine the installation path. Please ensure your web server is configured correctly.');
             }
             $scriptName = $_SERVER['SCRIPT_NAME'];
+            // Normalize first, then validate to ensure we're checking the actual value that will be used
+            $scriptName = str_replace('\\', '/', $scriptName); // Normalize directory separators
+            $scriptName = preg_replace('#/+#', '/', $scriptName); // Remove duplicate slashes
             // Validate that SCRIPT_NAME starts with / and contains only valid path characters
+            // Also prevent path traversal attempts
             if (!preg_match('#^/[\w\-/.]*$#', $scriptName) || strpos($scriptName, '..') !== false) {
                 error('Invalid installation path detected. Please ensure the installer is accessed through a valid URL.');
             }
-            $scriptName = str_replace('\\', '/', $scriptName); // Normalize directory separators
-            $scriptName = preg_replace('#/+#', '/', $scriptName); // Remove duplicate slashes
             $basePath = dirname($scriptName, 2); // Go up two directory levels from /install/install.php
             // Normalize the path (remove trailing slash if not root)
             $basePath = $basePath === '/' ? '' : $basePath;
