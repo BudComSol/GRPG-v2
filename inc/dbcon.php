@@ -7,7 +7,11 @@ if (!defined('GRPG_INC')) {
 if (!defined('INSTALLER') && !file_exists(dirname(__DIR__) . '/.env')) {
     // Try to copy .env.local to .env if it exists
     if (file_exists(dirname(__DIR__) . '/.env.local')) {
-        copy(dirname(__DIR__) . '/.env.local', dirname(__DIR__) . '/.env');
+        if (!copy(dirname(__DIR__) . '/.env.local', dirname(__DIR__) . '/.env')) {
+            // If copy fails, redirect to install
+            header('Location: install');
+            exit;
+        }
     } else {
         header('Location: install');
         exit;
