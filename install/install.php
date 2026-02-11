@@ -256,14 +256,21 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
             if (!is_dir($path)) {
                 error('I couldn\'t find that directory. Are you sure you\'ve entered the correct game path?');
             }
-            $siteUrl = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . $_SERVER['HTTP_HOST'].'/';
+            // Construct the base URL from the current request
+            $protocol = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '');
+            $host = $_SERVER['HTTP_HOST'];
+            // Get the base path by going up two directories from /install/install.php
+            $basePath = dirname(dirname($_SERVER['SCRIPT_NAME']));
+            // Normalize the path (remove trailing slash if not root)
+            $basePath = $basePath === '/' ? '' : $basePath;
+            $siteUrl = $protocol . '://' . $host . $basePath;
             $configuration = 'MYSQL_HOST="' . $_POST['host'] . '"
 MYSQL_USER="' . $_POST['user'] . '"
 MYSQL_PASS="' . $_POST['pass'] . '"
 MYSQL_BASE="' . $_POST['name'] . '"
 DEFAULT_TIMEZONE="' . $_POST['timezone'] . '"
 GAME_PATH="' . addslashes($_POST['gamedir']) . '"
-SITE_URL="'.rtrim($siteUrl, '/').'"
+SITE_URL="'.$siteUrl.'"
 ';
             if (!file_exists($configFile)) {
                 info('The configuration file (<code>' . $configFile . '</code>) couldn\'t be found. Trying to create it now...');
