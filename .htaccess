@@ -1,4 +1,3 @@
-DirectoryIndex index.php
-FallbackResource index.php
+DirectoryIndex home.php index.php
 
 Header always edit Set-Cookie (.*) "$1; HTTPOnly"
