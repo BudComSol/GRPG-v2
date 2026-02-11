@@ -8,6 +8,5 @@
 .idea
 cache
 .env
-composer.lock
 *.7z
 *.zip

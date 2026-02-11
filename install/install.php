@@ -423,36 +423,11 @@ SITE_URL="'.$siteUrl.'"
             <?php
             break;
         case 7:
-            echo 'Checking if we can run <code>shell_exec</code> commands';
-            if(isFunctionAvailable('shell_exec')) {
-                ?>
-                ... <span style="color:green;">we can!</span><br>
-                Checking if Composer is installed<?php
-                $whichWhere = strncmp(PHP_OS_FAMILY, 'WIN', 3) === 0 ? 'where' : 'command -v';
-                if(commandExists($whichWhere.' composer')) {
-                    ?>
-                    ... <span style="color:green;">it is!</span><br>
-                    Running <code>composer update</code>
-                    <?php
-                    if(shell_exec('composer update') !== false) {
-                        success('Composer has been updated');
-                    } else {
-                        error('Couldn\'t run <code>composer update</code>. Check the log for more information');
-                    }
-                } else {
-                    ?>
-                    ... <span style="color:red;">it isn't</span><br>
-                    Recommend you <a href="https://getcomposer.org" target="_blank">install Composer</a>
-                    <?php
-                }
-            } else {
-                ?>
-                ... <span style="color:red;">we can't</span>
-                If you have SSH access, you will need to run<br>
-                <code>composer update</code><br>
-                within the game's installation directory
-                <?php
-            }?>
+            ?>
+            All dependencies are included locally - no additional installation steps required!<br>
+            <?php
+            success('Installation complete! All required dependencies are bundled with the application.');
+            ?>
             I recommend that you remove this installation directory (keep a local backup, just in case).<br/>
             I can try to delete it for you now if you'd like?<br/>
             <a href="install.php?step=8">Yes, try and remove this directory</a> &middot;
