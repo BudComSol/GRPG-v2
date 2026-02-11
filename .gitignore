@@ -8,7 +8,6 @@
 .idea
 cache
 .env
-vendor
 composer.lock
 *.7z
 *.zip

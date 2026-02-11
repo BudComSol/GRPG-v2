@@ -1,0 +1,11 @@
+# Allow access to Font Awesome CSS and font files
+<FilesMatch "\.(css|woff|woff2|ttf|eot|svg)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Deny access to PHP files for security
+<FilesMatch "\.php$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>

@@ -8,12 +8,13 @@ if (!defined('INSTALLER') && !file_exists(dirname(__DIR__) . '/.env')) {
     header('Location: install');
     exit;
 }
-$composer = dirname(__DIR__) . '/vendor/autoload.php';
-if (!file_exists($composer)) {
-    exit('Composer required.');
+// Load local vendor autoloader (no Composer required)
+$autoloader = __DIR__ . '/vendor/autoload.php';
+if (!file_exists($autoloader)) {
+    exit('Required dependencies not found. Please ensure inc/vendor/ directory exists.');
 }
 /** @noinspection PhpIncludeInspection */
-require_once $composer;
+require_once $autoloader;
 $dotenv = \Dotenv\Dotenv::createUnsafeImmutable(dirname(__DIR__));
 $dotenv->load();
 $extraIncludes = getenv('EXTRA_INCLUDES');
