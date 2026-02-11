@@ -12,6 +12,9 @@ if (!defined('INSTALLER') && !file_exists(dirname(__DIR__) . '/.env')) {
             header('Location: install');
             exit;
         }
+        // Successfully copied .env.local to .env, but still need to run installer
+        header('Location: install');
+        exit;
     } else {
         header('Location: install');
         exit;
