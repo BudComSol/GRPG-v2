@@ -13,15 +13,14 @@ if (!defined('INSTALLER') && !file_exists(dirname(__DIR__) . '/.env')) {
 // Check if .env has placeholder values that need to be configured
 if (!defined('INSTALLER') && file_exists(dirname(__DIR__) . '/.env')) {
     $envContent = file_get_contents(dirname(__DIR__) . '/.env');
-    // Check for common placeholder values that indicate .env hasn't been properly configured
-    if ($envContent !== false && (
-        strpos($envContent, 'MYSQL_BASE="dbname"') !== false ||
-        (strpos($envContent, 'MYSQL_HOST="localhost"') !== false && 
-         strpos($envContent, 'MYSQL_USER="root"') !== false && 
-         strpos($envContent, 'MYSQL_PASS="pass"') !== false &&
-         strpos($envContent, 'MYSQL_BASE="dbname"') !== false)
-    )) {
-        // .env contains placeholder values - redirect to installer
+    // Check for the complete set of placeholder values that indicate .env hasn't been properly configured
+    // Only redirect if ALL placeholder values match to avoid false positives
+    if ($envContent !== false && 
+        strpos($envContent, 'MYSQL_HOST="localhost"') !== false && 
+        strpos($envContent, 'MYSQL_USER="root"') !== false && 
+        strpos($envContent, 'MYSQL_PASS="pass"') !== false &&
+        strpos($envContent, 'MYSQL_BASE="dbname"') !== false) {
+        // .env contains all placeholder values - redirect to installer
         header('Location: install');
         exit;
     }

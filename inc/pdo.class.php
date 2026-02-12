@@ -72,15 +72,16 @@ class database
                 error_log('Database connection error: ' . $e->getMessage());
             }
             
-            // Check if database credentials appear to be unconfigured (placeholder values)
+            // Check if database credentials appear to be unconfigured (all placeholder values)
+            // Only redirect if ALL placeholder values match to avoid false positives
             $hasPlaceholders = (
-                (static::$host === 'localhost' && static::$user === 'root' && 
-                 static::$pass === 'pass' && static::$name === 'dbname') ||
-                static::$name === 'dbname' || 
-                static::$name === '' || static::$name === false
+                static::$host === 'localhost' && 
+                static::$user === 'root' && 
+                static::$pass === 'pass' && 
+                static::$name === 'dbname'
             );
             
-            // If credentials look like placeholders, redirect to installer
+            // If credentials match complete placeholder set, redirect to installer
             if ($hasPlaceholders && !defined('INSTALLER')) {
                 header('Location: ' . (defined('BASE_URL') ? BASE_URL . '/install' : '/install'));
                 exit;
