@@ -1,0 +1,42 @@
+# Allow access to Securimage CAPTCHA files while keeping security
+# These files need to be accessed directly by the browser
+
+# Default: Deny access to all files
+# Apache 2.4+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+# Apache 2.2
+<IfModule !mod_authz_core.c>
+    Order Deny,Allow
+    Deny from all
+</IfModule>
+
+# Allow access to static assets (images, audio, css, js)
+<FilesMatch "\.(jpg|jpeg|png|gif|css|js|swf|mp3|wav)$">
+    # Apache 2.4+
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+    
+    # Apache 2.2
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Allow from all
+    </IfModule>
+</FilesMatch>
+
+# Allow access to specific Securimage PHP files that need to be accessed by the browser
+<FilesMatch "^securimage_(show|play)\.php$">
+    # Apache 2.4+
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+    
+    # Apache 2.2
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Allow from all
+    </IfModule>
+</FilesMatch>
