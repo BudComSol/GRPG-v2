@@ -39,7 +39,7 @@ function log_error(string $message, string $level = 'ERROR', array $context = []
     $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
     $userId = $_SESSION['id'] ?? 0;
-    $requestUri = $_SERVER['REQUEST_URI'] ?? 'CLI';
+    $requestUri = $_SERVER['REQUEST_URI'] ?? (php_sapi_name() === 'cli' ? 'CLI' : 'unknown');
     
     // Build the log message
     $logMessage = sprintf(

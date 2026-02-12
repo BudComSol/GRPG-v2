@@ -322,7 +322,11 @@ function isImage($url, $local = false)
             $dims = (array)getimagesize($url);
         } catch (Exception $e) {
             /** @noinspection ForgottenDebugOutputInspection */
-            log_warning('Image size check failed: ' . $e->getMessage(), ['url' => $url]);
+            if (function_exists('log_warning')) {
+                log_warning('Image size check failed: ' . $e->getMessage(), ['url' => $url]);
+            } else {
+                error_log($e->getMessage());
+            }
             return false;
         }
         if (!is_array($dims) || !isset($dims[0], $dims[1]) || !$dims[0] || !$dims[1]) {
@@ -1388,7 +1392,11 @@ function csrf_check($name, $which, $exception = false, $time = 600, $multiple = 
         return nocsrf::check($name, $which, $exception, $time, $multiple);
     } catch (Exception $e) {
         /** @noinspection ForgottenDebugOutputInspection */
-        log_security_issue('CSRF check failed: ' . $e->getMessage(), ['name' => $name]);
+        if (function_exists('log_security_issue')) {
+            log_security_issue('CSRF check failed: ' . $e->getMessage(), ['name' => $name]);
+        } else {
+            error_log($e->getMessage());
+        }
         return false;
     }
 }
