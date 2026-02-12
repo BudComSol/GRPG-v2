@@ -448,9 +448,28 @@ SITE_URL="'.$siteUrl.'"
                 warning('I couldn\'t delete this folder. Please manually delete it.' . $extra);
             } else {
                 $siteUrl = getenv('SITE_URL') ?: '/';
-                // Validate URL to prevent open redirect - only allow relative paths or same-host URLs
-                if (!str_starts_with($siteUrl, '/') && !str_starts_with($siteUrl, 'http://') && !str_starts_with($siteUrl, 'https://')) {
-                    $siteUrl = '/';
+                // Validate URL to prevent open redirect and header injection
+                // Remove any CRLF characters to prevent header injection
+                $siteUrl = str_replace(["\r", "\n", "\0"], '', $siteUrl);
+                // Only allow relative paths or validate absolute URLs match expected domain
+                if (!str_starts_with($siteUrl, '/') || str_starts_with($siteUrl, '//')) {
+                    // Block protocol-relative URLs and validate absolute URLs
+                    if (str_starts_with($siteUrl, '//')) {
+                        // Protocol-relative URLs not allowed
+                        $siteUrl = '/';
+                    } else {
+                        // For absolute URLs, validate the domain matches the expected host
+                        $parsedUrl = parse_url($siteUrl);
+                        if (!$parsedUrl || !isset($parsedUrl['scheme']) || !in_array($parsedUrl['scheme'], ['http', 'https'])) {
+                            // Invalid URL, use fallback
+                            $siteUrl = '/';
+                        } elseif (isset($_SERVER['HTTP_HOST']) && isset($parsedUrl['host'])) {
+                            // Validate host matches current domain
+                            if ($parsedUrl['host'] !== $_SERVER['HTTP_HOST']) {
+                                $siteUrl = '/';
+                            }
+                        }
+                    }
                 }
                 $_SESSION['success'] = 'I\'ve managed to delete this install folder. Have fun!<br><a href="' . htmlspecialchars($siteUrl, ENT_QUOTES, 'UTF-8') . '">To the game!</a>';
                 header('Location: ' . $siteUrl);
