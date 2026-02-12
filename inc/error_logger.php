@@ -36,10 +36,25 @@ function log_error(string $message, string $level = 'ERROR', array $context = []
     
     // Prepare the log entry
     $timestamp = date('Y-m-d H:i:s');
+    
+    // Get client IP, checking proxy headers
     $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && filter_var($_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP)) {
+        $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } elseif (isset($_SERVER['HTTP_X_REAL_IP']) && filter_var($_SERVER['HTTP_X_REAL_IP'], FILTER_VALIDATE_IP)) {
+        $ipAddress = $_SERVER['HTTP_X_REAL_IP'];
+    }
+    
+    // Sanitize user agent to prevent log injection
+    $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? preg_replace('/[\r\n\t]/', '', $_SERVER['HTTP_USER_AGENT']) : 'unknown';
     $userId = $_SESSION['id'] ?? 0;
+    
+    // Sanitize request URI to prevent log injection
     $requestUri = $_SERVER['REQUEST_URI'] ?? (php_sapi_name() === 'cli' ? 'CLI' : 'unknown');
+    $requestUri = preg_replace('/[\r\n\t]/', '', $requestUri);
+    
+    // Sanitize message to prevent log injection
+    $message = preg_replace('/[\r\n\t]/', ' ', $message);
     
     // Build the log message
     $logMessage = sprintf(

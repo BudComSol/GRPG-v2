@@ -387,7 +387,7 @@ class database
     public function columnExists($column, $table): bool
     {
         try {
-            $result = $this->db->query('SHOW COLUMNS FROM `' . $table . '` WHERE `Fieldname` = "' . $column . '"');
+            $result = $this->db->query('SHOW COLUMNS FROM `' . $table . '` WHERE `Field` = "' . $column . '"');
         } catch (Exception $e) {
             /** @noinspection ForgottenDebugOutputInspection */
             if (function_exists('log_database_error')) {
