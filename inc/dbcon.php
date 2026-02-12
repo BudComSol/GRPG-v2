@@ -5,17 +5,23 @@ if (!defined('GRPG_INC')) {
     exit;
 }
 if (!defined('INSTALLER') && !file_exists(dirname(__DIR__) . '/.env')) {
-    // Try to copy .env.local to .env if it exists
-    if (file_exists(dirname(__DIR__) . '/.env.local')) {
-        if (!copy(dirname(__DIR__) . '/.env.local', dirname(__DIR__) . '/.env')) {
-            // If copy fails, redirect to install
-            header('Location: install');
-            exit;
-        }
-        // Successfully copied .env.local to .env, but still need to run installer
-        header('Location: install');
-        exit;
-    } else {
+    // .env doesn't exist - redirect to installer
+    header('Location: install');
+    exit;
+}
+
+// Check if .env has placeholder values that need to be configured
+if (!defined('INSTALLER') && file_exists(dirname(__DIR__) . '/.env')) {
+    $envContent = file_get_contents(dirname(__DIR__) . '/.env');
+    // Check for common placeholder values that indicate .env hasn't been properly configured
+    if ($envContent !== false && (
+        strpos($envContent, 'MYSQL_BASE="dbname"') !== false ||
+        (strpos($envContent, 'MYSQL_HOST="localhost"') !== false && 
+         strpos($envContent, 'MYSQL_USER="root"') !== false && 
+         strpos($envContent, 'MYSQL_PASS="pass"') !== false &&
+         strpos($envContent, 'MYSQL_BASE="dbname"') !== false)
+    )) {
+        // .env contains placeholder values - redirect to installer
         header('Location: install');
         exit;
     }

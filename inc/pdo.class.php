@@ -71,7 +71,22 @@ class database
             } else {
                 error_log('Database connection error: ' . $e->getMessage());
             }
-            // Show user-friendly error without exposing sensitive details
+            
+            // Check if database credentials appear to be unconfigured (placeholder values)
+            $hasPlaceholders = (
+                (static::$host === 'localhost' && static::$user === 'root' && 
+                 static::$pass === 'pass' && static::$name === 'dbname') ||
+                static::$name === 'dbname' || 
+                static::$name === '' || static::$name === false
+            );
+            
+            // If credentials look like placeholders, redirect to installer
+            if ($hasPlaceholders && !defined('INSTALLER')) {
+                header('Location: ' . (defined('BASE_URL') ? BASE_URL . '/install' : '/install'));
+                exit;
+            }
+            
+            // Otherwise show user-friendly error without exposing sensitive details
             http_response_code(503);
             exit('<h1>Service Temporarily Unavailable</h1><p>Unable to connect to the database. Please try again later or contact the administrator.</p>');
         }
