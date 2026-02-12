@@ -469,12 +469,12 @@ SITE_URL="'.$siteUrl.'"
                         // Compare host using SERVER_NAME (safer than HTTP_HOST which can be spoofed)
                         // Case-insensitive comparison as hostnames are case-insensitive
                         $urlHost = strtolower($parsedUrl['host']);
-                        $serverName = strtolower($_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? '');
+                        $serverName = strtolower($_SERVER['SERVER_NAME'] ?? '');
                         // Remove port from server name if present
                         $serverName = explode(':', $serverName)[0];
                         
-                        if ($urlHost !== $serverName) {
-                            // Host doesn't match current domain
+                        if (empty($serverName) || $urlHost !== $serverName) {
+                            // Server name not set or host doesn't match current domain
                             $siteUrl = '/';
                         }
                     }
@@ -485,6 +485,11 @@ SITE_URL="'.$siteUrl.'"
                     $siteUrl = '/';
                 }
                 // Relative paths starting with / are OK
+                
+                // Final sanity check: ensure no remaining control characters
+                if (preg_match('/[\x00-\x1F\x7F]/', $siteUrl)) {
+                    $siteUrl = '/';
+                }
                 
                 $_SESSION['success'] = 'I\'ve managed to delete this install folder. Have fun!<br><a href="' . htmlspecialchars($siteUrl, ENT_QUOTES, 'UTF-8') . '">To the game!</a>';
                 header('Location: ' . $siteUrl);
