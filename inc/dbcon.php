@@ -32,7 +32,7 @@ if (!file_exists($autoloader)) {
 }
 /** @noinspection PhpIncludeInspection */
 require_once $autoloader;
-$dotenv = \Dotenv\Dotenv::createUnsafeImmutable(dirname(__DIR__));
+$dotenv = \Dotenv\Dotenv::createUnsafeImmutable(dirname(__DIR__), ['.env', '.env.local']);
 $dotenv->safeLoad();
 $extraIncludes = getenv('EXTRA_INCLUDES');
 if ($extraIncludes !== false) {
