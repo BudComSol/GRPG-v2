@@ -30,14 +30,14 @@ if (!$user_class->id) {
     exit;
 }
 $time = date('F d, Y g:i:sa');
-$siteURL = getenv('SITE_URL');
+$site_url = getenv('SITE_URL');
 ob_start(); ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head><?php
-if ($siteURL !== null) {
+if ($site_url !== null) {
     ?>
-    <base href="<?php echo rtrim($siteURL, '/').'/'; ?>"/>
+    <base href="<?php echo rtrim($site_url, '/').'/'; ?>"/>
     <?php
 }
     ?><title><?php echo GAME_NAME; ?></title>
@@ -84,4 +84,8 @@ if ($siteURL !== null) {
                                 <td width="10"></td>
                                 <td valign="top" class="mainbox">
                                     <table class="content"><?php
-require_once __DIR__.'/footer.php';
+// Note: footer.php is included at the end via register_shutdown_function
+// This ensures proper HTML closure and statistics display
+register_shutdown_function(function() {
+    require_once __DIR__.'/footer.php';
+});
