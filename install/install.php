@@ -137,7 +137,7 @@ $steps = [1, 2, 3, 4, 5, 6, 7, 8];
 $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_GET['step'], $steps,
     false) ? $_GET['step'] : 1; ?>
 <div class="header">
-    <h1>gRPG: PDO</h1>
+    <h1>gRPG: PDO V2.5.0</h1>
     <h2>Installation</h2>
     <h3>Progress: <span class="pure-u-<?php echo $_GET['step']; ?>-<?php echo count($steps); ?>"></span></h3>
     <p>Step <?php echo $_GET['step']; ?> of <?php echo count($steps); ?></p>
@@ -163,14 +163,14 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
                     <input type="text" name="gamedir" id="game-dir" value="<?php echo DIRECTORY_SEPARATOR; ?>"/>
                 </div>
                 <div class="pure-controls">
-                    <button type="submit" class="pure-button pure-button-primary">Check</button>
+                    <button type="submit" class="pure-button pure-button-primary">Perform These Checks Now</button>
                 </div>
             </form>
+            <br>
             <p>
                 *<strong>Game Directory:</strong> This is simply where you've uploaded the game - this is usually
                 <code>/</code>.<br/>
-                Make sure that <code>/.env</code> is writable.<br/>
-                If you're not sure, just leave it blank.
+                Make sure that <code>/.env</code> is writable but if you're not sure, you can just leave it blank.
             </p>
             <?php
             break;
@@ -188,7 +188,7 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
                 error('I couldn\'t find that directory. Are you sure you\'ve entered the correct game path?');
             }
             $timezones = formatTimeZones(timezone_identifiers_list());
-            ?><h2 class="content-subhead">That checks out fine!</h2>
+            ?><h2 class="content-subhead">Everything checks out fine!</h2>
             <p>
             <form action="install.php?step=3" method="post" class="pure-form pure-form-aligned">
                 <input type="hidden" name="gamedir" value="<?php echo $path; ?>"/>
@@ -214,16 +214,18 @@ $_GET['step'] = isset($_GET['step']) && is_numeric($_GET['step']) && in_array($_
                     <?php echo listTimeZones($timezones); ?>
                 </div>
                 <div class="pure-controls">
-                    <button type="submit" class="pure-button pure-button-primary">Connect</button>
+                    <button type="submit" class="pure-button pure-button-primary">Try Connection To DB Now</button>
                 </div>
             </form>
+            <br>
             <p>
-                *<strong>Host:</strong> This speaks for itself. You need to enter the URL to your MySQL database.<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;- For most people, it's normally
+                *<strong>Host:</strong> You need to enter the URL to your MySQL database.<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;- For most it's usually 
                 <code>localhost</code>, which is filled in by default.<br/>
                 *<strong>User:</strong> The name of the user you created when creating the database.<br/>
                 *<strong>Pass:</strong> This is the password you entered when creating the user.<br/>
-                *<strong>Database:</strong> And finally, the name of the database itself!
+                *<strong>Database:</strong> will be the name of the database itself.<br/>
+                *<strong>Time Offset:</strong> And finally, where you are in the world!
             </p>
             <?php
             break;
@@ -344,7 +346,7 @@ SITE_URL="'.$siteUrl.'"
         case 4:
             require_once $mainPath . '/inc/dbcon.php';
             $db = database::getInstance(); // Manually instantiate DB connection for database installation
-            ?><h2 class="content-subhead">We're connected! Let's install the database</h2><?php
+            ?><h2 class="content-subhead">We're connected, now let's install the database.</h2><?php
             $templineMain = '';
             $lines = file($sqlPathMain);
             foreach ($lines as $line) {
@@ -365,7 +367,7 @@ SITE_URL="'.$siteUrl.'"
             }
             break;
         case 5:
-            ?><h2 class="content-subhead">Database installed, let's configure the game</h2>
+            ?><h2 class="content-subhead">Database installed, let's configure the game.</h2>
             <form action="install.php?step=6" method="post" class="pure-form pure-form-aligned">
                 <legend>Your Account</legend>
                 <div class="pure-control-group">
@@ -385,7 +387,7 @@ SITE_URL="'.$siteUrl.'"
                     <input type="email" name="email" class="pure-u-1-3" required/>
                 </div>
                 <div class="pure-controls">
-                    <button type="submit" name="submit" class="pure-button pure-button-primary">Create Account</button>
+                    <button type="submit" name="submit" class="pure-button pure-button-primary">Create An Account Now</button>
                     <button type="reset" class="pure-button pure-button-secondary"><i class="fa fa-recycle"></i> Reset
                     </button>
                 </div>
