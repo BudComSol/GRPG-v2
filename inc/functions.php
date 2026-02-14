@@ -3,6 +3,16 @@ declare(strict_types=1);
 if (!defined('GRPG_INC')) {
     exit;
 }
+/**
+ * Get current Unix timestamp with microseconds as float
+ *
+ * @return float
+ */
+function microtime_float(): float
+{
+    list($usec, $sec) = explode(' ', microtime());
+    return ((float)$usec + (float)$sec);
+}
 if ($db->tableExists('users')) {
     $db->query('SELECT id FROM users WHERE admin = 1 ORDER BY id LIMIT 1');
     $db->execute();
